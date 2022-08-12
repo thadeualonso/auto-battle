@@ -1,43 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using static AutoBattle.Types;
+using AutoBattle.Types;
 
-namespace AutoBattle
+namespace AutoBattle.Entities
 {
     public class Grid
     {
-        public List<GridBox> grids = new List<GridBox>();
-        public int xLenght;
-        public int yLength;
-        public Grid(int Lines, int Columns)
+        public List<GridBox> Grids { get; private set; } = new List<GridBox>();
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+
+        public Grid(int lines, int columns)
         {
-            xLenght = Lines;
-            yLength = Columns;
+            Width = lines;
+            Height = columns;
             Console.WriteLine("The battle field has been created\n");
-            for (int i = 0; i < Lines; i++)
+
+            for (int y = 0; y < lines; y++)
             {
-                    grids.Add(newBox);
-                for(int j = 0; j < Columns; j++)
+                for(int x = 0; x < columns; x++)
                 {
-                    GridBox newBox = new GridBox(j, i, false, (Columns * i + j));
+                    GridBox newBox = new GridBox(x, y, false, (columns * y + x));
+                    Grids.Add(newBox);
                     Console.Write($"{newBox.Index}\n");
                 }
             }
         }
 
-        // prints the matrix that indicates the tiles of the battlefield
-        public void drawBattlefield(int Lines, int Columns)
+        public void DrawBattlefield(int lines, int columns)
         {
-            for (int i = 0; i < Lines; i++)
+            for (int i = 0; i < lines; i++)
             {
-                for (int j = 0; j < Columns; j++)
+                for (int j = 0; j < columns; j++)
                 {
                     GridBox currentgrid = new GridBox();
-                    if (currentgrid.ocupied)
+                    if (currentgrid.IsOccupied)
                     {
-                        //if()
                         Console.Write("[X]\t");
                     }
                     else
@@ -49,6 +47,5 @@ namespace AutoBattle
             }
             Console.Write(Environment.NewLine + Environment.NewLine);
         }
-
     }
 }

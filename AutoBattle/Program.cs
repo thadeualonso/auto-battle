@@ -1,9 +1,9 @@
 ﻿using System;
-using static AutoBattle.Character;
-using static AutoBattle.Grid;
 using System.Collections.Generic;
 using System.Linq;
-using static AutoBattle.Types;
+using AutoBattle.Entities;
+using AutoBattle.Enums;
+using AutoBattle.Types;
 
 namespace AutoBattle
 {
@@ -19,7 +19,7 @@ namespace AutoBattle
             Character EnemyCharacter;
             List<Character> AllPlayers = new List<Character>();
             int currentTurn = 0;
-            int numberOfPossibleTiles = grid.grids.Count;
+            int numberOfPossibleTiles = grid.Grids.Count;
             Setup(); 
 
 
@@ -155,14 +155,14 @@ namespace AutoBattle
             void AlocatePlayerCharacter()
             {
                 int random = 0;
-                GridBox RandomLocation = (grid.grids.ElementAt(random));
+                GridBox RandomLocation = (grid.Grids.ElementAt(random));
                 Console.Write($"{random}\n");
-                if (!RandomLocation.ocupied)
+                if (!RandomLocation.IsOccupied)
                 {
                     GridBox PlayerCurrentLocation = RandomLocation;
-                    RandomLocation.ocupied = true;
-                    grid.grids[random] = RandomLocation;
-                    PlayerCharacter.currentBox = grid.grids[random];
+                    RandomLocation.IsOccupied = true;
+                    grid.Grids[random] = RandomLocation;
+                    PlayerCharacter.CurrentBox = grid.Grids[random];
                     AlocateEnemyCharacter();
                 } else
                 {
@@ -173,15 +173,15 @@ namespace AutoBattle
             void AlocateEnemyCharacter()
             {
                 int random = 24;
-                GridBox RandomLocation = (grid.grids.ElementAt(random));
+                GridBox RandomLocation = (grid.Grids.ElementAt(random));
                 Console.Write($"{random}\n");
-                if (!RandomLocation.ocupied)
+                if (!RandomLocation.IsOccupied)
                 {
                     EnemyCurrentLocation = RandomLocation;
-                    RandomLocation.ocupied = true;
-                    grid.grids[random] = RandomLocation;
-                    EnemyCharacter.currentBox = grid.grids[random];
-                    grid.drawBattlefield(5 , 5);
+                    RandomLocation.IsOccupied = true;
+                    grid.Grids[random] = RandomLocation;
+                    EnemyCharacter.CurrentBox = grid.Grids[random];
+                    grid.DrawBattlefield(5 , 5);
                 }
                 else
                 {

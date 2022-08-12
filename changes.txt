@@ -1,0 +1,11 @@
+- Transformei os membros de classes em propriedades
+- Renomeei todas as propriedades para usarem o padrão PascalCasing
+- Extrai as structs e a enum para seus respectivos arquivos
+- Criei pastas para organizar as structs e enum
+- Nomeei os namespaces para refletirem melhor seus conteúdos
+- Classe GridBox.cs
+	- Renomeei as propriedades xIndex e yIndex para X e Y, para melhorar a compreensão
+  	- Renomeei a propriedade ocupied para IsOccupied, melhorando a legibilidade.
+- Classe Grid.cs
+	- Renomeei as propriedades xLenght e yLenght para Width e Height
+- Renomeei os parametros de alguns métodos para usarem camelCasing
