@@ -8,118 +8,134 @@ namespace AutoBattle.Entities
     {
         public string Name { get; private set; }
         public float Health { get; set; }
-        public float BaseDamage { get; set; }
-        public float DamageMultiplier { get; private set; }
-        public GridBox CurrentBox;
+        public CharacterSkills Skills { get; set; }
         public int PlayerIndex { get; set; }
-        public Character Target { get; set; } 
+        public Character Target { get; set; }
+        public bool IsDead { get; set; }
 
-        public Character(CharacterClass characterClass)
+        public GridBox CurrentBox;
+
+        public Character(string name, float health, CharacterClass characterClass)
         {
+            Name = name;
+            Health = health;
 
-        }
-
-        public bool TakeDamage(float amount)
-        {
-            if((Health -= BaseDamage) <= 0)
+            switch (characterClass)
             {
-                Die();
-                return true;
+                case CharacterClass.Paladin:
+                    Skills = new CharacterSkills { BaseDamage = 10, DamageMultiplier = 1 };
+                    break;
+                case CharacterClass.Warrior:
+                    Skills = new CharacterSkills { BaseDamage = 15, DamageMultiplier = 1.2f };
+                    break;
+                case CharacterClass.Cleric:
+                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 2f };
+                    break;
+                case CharacterClass.Archer:
+                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 1.8f };
+                    break;
+                default:
+                    Console.WriteLine("Invalid class!");
+                    break;
             }
-            return false;
         }
 
-        public void Die()
+        public void TakeDamage(float amount)
         {
-            //TODO >> maybe kill him?
+            Health -= amount;
+            IsDead = Health <= 0;
         }
 
-        public void WalkTo(bool canWalk)
+        public void StartTurn(Grid grid)
         {
-
-        }
-
-        public void StartTurn(Grid battlefield)
-        {
-            if (CheckCloseTargets(battlefield)) 
+            if (CheckCloseTargets(grid)) 
             {
                 Attack(Target);
                 return;
             }
-            else
-            {   // if there is no target close enough, calculates in wich direction this character should move to be closer to a possible target
+            else 
+            { 
                 if(this.CurrentBox.X > Target.CurrentBox.X)
                 {
-                    if ((battlefield.Grids.Exists(x => x.Index == CurrentBox.Index - 1)))
-                    {
-                        CurrentBox.IsOccupied = false;
-                        battlefield.Grids[CurrentBox.Index] = CurrentBox;
-                        CurrentBox = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index - 1));
-                        CurrentBox.IsOccupied = true;
-                        battlefield.Grids[CurrentBox.Index] = CurrentBox;
-                        Console.WriteLine($"Player {PlayerIndex} walked left\n");
-                        battlefield.DrawBattlefield(5, 5);
-
-                        return;
-                    }
+                    MoveTo(grid, Directions.LEFT);
                 } 
                 else if(CurrentBox.X < Target.CurrentBox.X)
                 {
-                    CurrentBox.IsOccupied = false;
-                    battlefield.Grids[CurrentBox.Index] = CurrentBox;
-                    CurrentBox = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index + 1));
-                    CurrentBox.IsOccupied = true;
-                    battlefield.Grids[CurrentBox.Index] = CurrentBox;
-                    Console.WriteLine($"Player {PlayerIndex} walked right\n");
-                    battlefield.DrawBattlefield(5, 5);
+                    MoveTo(grid, Directions.RIGHT);
                 }
-
-                if (this.CurrentBox.Y > Target.CurrentBox.Y)
+                else if (this.CurrentBox.Y > Target.CurrentBox.Y)
                 {
-                    battlefield.DrawBattlefield(5, 5);
-                    this.CurrentBox.IsOccupied = false;
-                    battlefield.Grids[CurrentBox.Index] = CurrentBox;
-                    this.CurrentBox = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index - battlefield.Width));
-                    this.CurrentBox.IsOccupied = true;
-                    battlefield.Grids[CurrentBox.Index] = CurrentBox;
-                    Console.WriteLine($"Player {PlayerIndex} walked up\n");
-                    return;
+                    MoveTo(grid, Directions.UP);
                 }
                 else if(this.CurrentBox.Y < Target.CurrentBox.Y)
                 {
-                    this.CurrentBox.IsOccupied = true;
-                    battlefield.Grids[CurrentBox.Index] = this.CurrentBox;
-                    this.CurrentBox = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index + battlefield.Width));
-                    this.CurrentBox.IsOccupied = false;
-                    battlefield.Grids[CurrentBox.Index] = CurrentBox;
-                    Console.WriteLine($"Player {PlayerIndex} walked down\n");
-                    battlefield.DrawBattlefield(5, 5);
-
-                    return;
+                    MoveTo(grid, Directions.DOWN);
                 }
             }
         }
 
-        // Check in x and y directions if there is any character close enough to be a target.
-        bool CheckCloseTargets(Grid battlefield)
+        private Vector2 GetDirection(Directions directions)
         {
-            bool left = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index - 1).IsOccupied);
-            bool right = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index + 1).IsOccupied);
-            bool up = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index + battlefield.Width).IsOccupied);
-            bool down = (battlefield.Grids.Find(x => x.Index == CurrentBox.Index - battlefield.Width).IsOccupied);
-
-            if (left & right & up & down) 
+            Vector2 result = new Vector2(0, 0);
+            switch (directions)
             {
-                return true;
+                case Directions.LEFT:
+                    result.X = -1;
+                    break;
+                case Directions.RIGHT:
+                    result.X = 1;
+                    break;
+                case Directions.UP:
+                    result.Y = -1;
+                    break;
+                case Directions.DOWN:
+                    result.Y = 1;
+                    break;
             }
-            return false; 
+            return result;
+        }
+
+        private void MoveTo(Grid grid, Directions direction)
+        {
+            Vector2 moveDirection = GetDirection(direction);
+            Vector2 finalPosition = new Vector2(CurrentBox.X + moveDirection.X, CurrentBox.Y + moveDirection.Y);
+            finalPosition = grid.ValidateMovement(finalPosition);
+            grid.SetOccupied(CurrentBox.Coords, false);
+            grid.SetOccupied(finalPosition, true);
+            CurrentBox = grid.GetTileAt(finalPosition);
+            Console.WriteLine($"{Name} walked {direction}\n");
+            grid.DrawBattlefield();
+        }
+
+        private bool CheckCloseTargets(Grid grid)
+        {
+            int x = CurrentBox.X;
+            int y = CurrentBox.Y;
+            Vector2 left = grid.ValidateMovement(new Vector2(x - 1, y));
+            Vector2 right = grid.ValidateMovement(new Vector2(x + 1, y));
+            Vector2 up = grid.ValidateMovement(new Vector2(x, y - 1));
+            Vector2 down = grid.ValidateMovement(new Vector2(x, y + 1));
+
+            bool hasEnemyOnLeft     = HasTargetOnTile(grid, left);
+            bool hasEnemyOnRight    = HasTargetOnTile(grid, right);
+            bool hasEnemyOnUp       = HasTargetOnTile(grid, up);
+            bool hasEnemyOnDown     = HasTargetOnTile(grid, down);
+
+            return hasEnemyOnDown || hasEnemyOnUp || hasEnemyOnLeft || hasEnemyOnRight;
+        }
+
+        private bool HasTargetOnTile(Grid grid, Vector2 coord)
+        {
+            return grid.Tiles[coord.X, coord.Y].IsOccupied && coord != CurrentBox.Coords;
         }
 
         public void Attack (Character target)
         {
-            var rand = new Random();
-            target.TakeDamage(rand.Next(0, (int)BaseDamage));
-            Console.WriteLine($"Player {PlayerIndex} is attacking the player {Target.PlayerIndex} and did {BaseDamage} damage\n");
+            var rand = new Random(DateTime.Now.Millisecond);
+            int randomDamage = (int)Math.Ceiling(rand.Next(0, (int)Skills.BaseDamage) * Skills.DamageMultiplier);
+            target.TakeDamage(randomDamage);
+            Console.WriteLine($"{Name} is attacking the {Target.Name} and did {randomDamage} damage");
+            Console.WriteLine($"{Name} Health: {Health} / {Target.Name} Health: {Target.Health}\n");
         }
     }
 }
