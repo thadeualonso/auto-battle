@@ -1,17 +1,16 @@
-﻿namespace AutoBattle.Types
+﻿using System.Numerics;
+
+namespace AutoBattle.Types
 {
     public struct GridBox
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
-        public Vector2 Coords { get { return new Vector2(X, Y); } }
+        public Vector2 Coords { get; set; }
         public bool IsOccupied { get; set; }
         public int Index { get; private set; }
 
         public GridBox(int x, int y, bool isOccupied, int index)
         {
-            X = x;
-            Y = y;
+            Coords = new Vector2(x, y);
             IsOccupied = isOccupied;
             Index = index;
         }

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Numerics;
 using AutoBattle.Types;
 
 namespace AutoBattle.Entities
@@ -58,12 +58,12 @@ namespace AutoBattle.Entities
 
         public void SetOccupied(Vector2 coord, bool isOccupied)
         {
-            Tiles[coord.X, coord.Y].IsOccupied = isOccupied;
+            Tiles[(int)coord.X, (int)coord.Y].IsOccupied = isOccupied;
         }
 
         public GridBox GetTileAt(Vector2 coord)
         {
-            return Tiles[coord.X, coord.Y];
+            return Tiles[(int)coord.X, (int)coord.Y];
         }
 
         public GridBox GetRandomTile()

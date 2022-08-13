@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoBattle.Entities;
 using AutoBattle.Enums;
 using AutoBattle.Types;
@@ -11,7 +10,7 @@ namespace AutoBattle
     {
         static void Main(string[] args)
         {
-            Grid grid = new Grid(5, 5);
+            Grid grid = new Grid(6, 6);
             Character PlayerCharacter;
             Character EnemyCharacter;
             List<Character> AllPlayers = new List<Character>();
@@ -117,12 +116,11 @@ namespace AutoBattle
                     RandomLocation = grid.GetRandomTile();
                 }
 
-                Console.Write($"Randomly placing {character.Name} at (x {RandomLocation.X} y {RandomLocation.Y})\n");
+                Console.Write($"Randomly placing {character.Name} at (x {RandomLocation.Coords.X} y {RandomLocation.Coords.Y})\n");
                 RandomLocation.IsOccupied = true;
-                grid.Tiles[RandomLocation.X, RandomLocation.Y] = RandomLocation;
+                grid.Tiles[(int)RandomLocation.Coords.X, (int)RandomLocation.Coords.Y] = RandomLocation;
                 character.CurrentBox = RandomLocation;
             }
-
         }
     }
 }
