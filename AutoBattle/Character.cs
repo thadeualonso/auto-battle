@@ -13,30 +13,26 @@ namespace AutoBattle.Entities
         public int PlayerIndex { get; set; }
         public Character Target { get; set; }
         public bool IsDead { get; set; }
+        public GridBox CurrentBox { get; set; }
 
-        public GridBox CurrentBox;
-
-        public Character(string name, float health, CharacterClass characterClass)
+        public Character(string name, float health, CharacterClasses characterClass)
         {
             Name = name;
             Health = health;
 
             switch (characterClass)
             {
-                case CharacterClass.Paladin:
-                    Skills = new CharacterSkills { BaseDamage = 10, DamageMultiplier = 1 };
+                case CharacterClasses.Paladin:
+                    Skills = new CharacterSkills { BaseDamage = 10, DamageMultiplier = 1, KnockBackPercentChance = 30 };
                     break;
-                case CharacterClass.Warrior:
-                    Skills = new CharacterSkills { BaseDamage = 15, DamageMultiplier = 1.2f };
+                case CharacterClasses.Warrior:
+                    Skills = new CharacterSkills { BaseDamage = 15, DamageMultiplier = 1.2f, KnockBackPercentChance = 50 };
                     break;
-                case CharacterClass.Cleric:
-                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 2f };
+                case CharacterClasses.Cleric:
+                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 2f, KnockBackPercentChance = 10 };
                     break;
-                case CharacterClass.Archer:
-                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 1.8f };
-                    break;
-                default:
-                    Console.WriteLine("Invalid class!");
+                case CharacterClasses.Archer:
+                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 1.8f, KnockBackPercentChance = 10 };
                     break;
             }
         }
@@ -56,19 +52,19 @@ namespace AutoBattle.Entities
             }
             else 
             { 
-                if(this.CurrentBox.Coords.X > Target.CurrentBox.Coords.X)
+                if(this.CurrentBox.Position.X > Target.CurrentBox.Position.X)
                 {
                     MoveTo(grid, Directions.LEFT);
                 } 
-                else if(CurrentBox.Coords.X < Target.CurrentBox.Coords.X)
+                else if(CurrentBox.Position.X < Target.CurrentBox.Position.X)
                 {
                     MoveTo(grid, Directions.RIGHT);
                 }
-                else if (this.CurrentBox.Coords.Y > Target.CurrentBox.Coords.Y)
+                else if (this.CurrentBox.Position.Y > Target.CurrentBox.Position.Y)
                 {
                     MoveTo(grid, Directions.UP);
                 }
-                else if(this.CurrentBox.Coords.Y < Target.CurrentBox.Coords.Y)
+                else if(this.CurrentBox.Position.Y < Target.CurrentBox.Position.Y)
                 {
                     MoveTo(grid, Directions.DOWN);
                 }
@@ -99,9 +95,9 @@ namespace AutoBattle.Entities
         public void MoveTo(Grid grid, Directions direction)
         {
             Vector2 moveDirection = GetDirection(direction);
-            Vector2 finalPosition = new Vector2(CurrentBox.Coords.X + moveDirection.X, CurrentBox.Coords.Y + moveDirection.Y);
+            Vector2 finalPosition = new Vector2(CurrentBox.Position.X + moveDirection.X, CurrentBox.Position.Y + moveDirection.Y);
             finalPosition = grid.ValidateMovement(finalPosition);
-            grid.SetOccupied(CurrentBox.Coords, false);
+            grid.SetOccupied(CurrentBox.Position, false);
             grid.SetOccupied(finalPosition, true);
             CurrentBox = grid.GetTileAt(finalPosition);
             Console.WriteLine($"{Name} walked {direction}\n");
@@ -110,8 +106,8 @@ namespace AutoBattle.Entities
 
         private bool CheckCloseTargets(Grid grid)
         {
-            float x = CurrentBox.Coords.X;
-            float y = CurrentBox.Coords.Y;
+            float x = CurrentBox.Position.X;
+            float y = CurrentBox.Position.Y;
             Vector2 left = grid.ValidateMovement(new Vector2(x - 1, y));
             Vector2 right = grid.ValidateMovement(new Vector2(x + 1, y));
             Vector2 up = grid.ValidateMovement(new Vector2(x, y - 1));
@@ -127,28 +123,29 @@ namespace AutoBattle.Entities
 
         private bool HasTargetOnTile(Grid grid, Vector2 coord)
         {
-            return grid.Tiles[(int)coord.X, (int)coord.Y].IsOccupied && coord != CurrentBox.Coords;
+            return grid.Tiles[(int)coord.X, (int)coord.Y].IsOccupied && coord != CurrentBox.Position;
         }
 
         public void Attack (Grid grid, Character target)
         {
-            var rand = new Random(DateTime.Now.Millisecond);
+            var rand = new Random();
             int randomDamage = (int)Math.Ceiling(rand.Next(0, (int)Skills.BaseDamage) * Skills.DamageMultiplier);
             target.TakeDamage(randomDamage);
             Console.WriteLine($"{Name} is attacking the {Target.Name} and did {randomDamage} damage");
-            Console.WriteLine($"{Name} Health: {Health} / {Target.Name} Health: {Target.Health}\n");
+            Console.WriteLine($"{Name} Health: {Health} / {Target.Name} Health: {Target.Health}");
 
-            double knowBackChance = rand.NextDouble();
+            int knowBackChance = rand.Next(0, 101);
 
-            if(knowBackChance >= 0.8f)
+            if(knowBackChance <= Skills.KnockBackPercentChance)
             {
-                Vector2 position = new Vector2(CurrentBox.Coords.X, CurrentBox.Coords.Y);
-                Vector2 targetPosition = new Vector2(target.CurrentBox.Coords.X, target.CurrentBox.Coords.Y);
+                Vector2 position = new Vector2(CurrentBox.Position.X, CurrentBox.Position.Y);
+                Vector2 targetPosition = new Vector2(target.CurrentBox.Position.X, target.CurrentBox.Position.Y);
                 Vector2 direction = (targetPosition - position);
-                Vector2.Normalize(direction);
-                target.MoveTo(grid, GetDirection(direction));
                 Console.WriteLine($"{Target.Name} got knocked back!");
+                target.MoveTo(grid, GetDirection(direction));
             }
+
+            Console.WriteLine();
         }
 
         private Directions GetDirection(System.Numerics.Vector2 direction)

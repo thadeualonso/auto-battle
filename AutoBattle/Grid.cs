@@ -15,13 +15,13 @@ namespace AutoBattle.Entities
             Height = lines;
             Width = columns;
             Tiles = new GridBox[Width, Height];
-            Console.WriteLine("The battle field has been created\n");
+            Console.WriteLine("> The battlefield has been created\n");
 
             for (int y = 0; y < lines; y++)
             {
                 for(int x = 0; x < columns; x++)
                 {
-                    GridBox newBox = new GridBox(x, y, false, (columns * y + x));
+                    GridBox newBox = new GridBox(x, y, false);
                     Tiles[x, y] = newBox;
                 }
             }
@@ -40,12 +40,26 @@ namespace AutoBattle.Entities
                     if (currentgrid.IsOccupied)
                         Console.Write("[X]\t");
                     else
-                        Console.Write($"[ ]\t");
+                        Console.Write("[ ]\t");
                 }
-                Console.Write(Environment.NewLine + Environment.NewLine);
+                Console.Write("\n\n");
             }
-            Console.Write(Environment.NewLine + Environment.NewLine);
+            Console.Write("\n\n");
         }
+
+        public void RandomlyPlaceCharacterOnGrid(Character character)
+        {
+            GridBox RandomLocation = GetRandomTile();
+
+            while (RandomLocation.IsOccupied)
+                RandomLocation = GetRandomTile();
+
+            Console.Write($"> Randomly placing {character.Name} at (x {RandomLocation.Position.X} y {RandomLocation.Position.Y})\n");
+            RandomLocation.IsOccupied = true;
+            Tiles[(int)RandomLocation.Position.X, (int)RandomLocation.Position.Y] = RandomLocation;
+            character.CurrentBox = RandomLocation;
+        }
+
         public Vector2 ValidateMovement(Vector2 movement)
         {
             Vector2 result = movement;
