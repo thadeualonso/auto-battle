@@ -10,7 +10,6 @@ namespace AutoBattle.Entities
         public string Name { get; private set; }
         public float Health { get; set; }
         public CharacterSkills Skills { get; set; }
-        public int PlayerIndex { get; set; }
         public Character Target { get; set; }
         public bool IsDead { get; set; }
         public GridBox CurrentBox { get; set; }
