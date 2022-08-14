@@ -22,8 +22,7 @@ namespace AutoBattle.Entities
         {
             Console.WriteLine("----- CREATING BATTLEFIELD -----");
             grid = new Grid(5, 5);
-            allPlayers.Add(Player);
-            allPlayers.Add(Enemy);
+            SetFirstPlayer();
 
             foreach (var character in allPlayers)
             {
@@ -36,6 +35,21 @@ namespace AutoBattle.Entities
             Console.ReadKey();
 
             StartTurn();
+        }
+
+        private void SetFirstPlayer()
+        {
+            var rand = new Random();
+            if (rand.Next(0, 2) == 0)
+            {
+                allPlayers.Add(Player);
+                allPlayers.Add(Enemy);
+            }
+            else
+            {
+                allPlayers.Add(Enemy);
+                allPlayers.Add(Player);
+            }
         }
 
         private void StartTurn()

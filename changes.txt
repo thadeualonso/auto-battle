@@ -7,11 +7,13 @@
 	- Criei o método 'MoveTo' para mover o personagem validando a posição final impedindo de sair dos limites do grid
 	- Alterei o método 'Attack' para aplicar um dano aleatório entre 0 e o 'BaseDamage' da classe escolhida multiplicada pelo 'DamageMultiplier' da classe
 	- Adicionei uma chance randomica de empurrar o target para a direção oposta. A chance percentual está nas Skills da classe
+	- Criei métodos auxiliares para converter 'Directions' para 'Vector2' e vice-versa
 - Game.cs
 	- Criei a classe para extrair a lógica do jogo do ponto de entrada do programa
 	- Passei a lógica de start game e turnos para a classe
 	- Troquei a forma como 'HandleTurn' era chamado pois estava causando um encadeamento de chamadas na stack desnecessário. Utilizei no lugar um 'do...while' loop
 - Grid.cs
+	- Criei um método para posicionar randomicamente os personagens no grid
 	- Criei métodos auxiliares para:
 		- Validar movimento de jogador -> ValidateMovement(movement)
 		- Alterar a propriedade 'isOccupied' dos tiles -> SetOccupied(coord, isOccupied)
