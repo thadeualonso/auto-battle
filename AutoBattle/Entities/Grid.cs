@@ -82,16 +82,10 @@ namespace AutoBattle.Entities
 
         public GridBox GetRandomTile()
         {
-            int randomX = GetRandomInt(0, Width);
-            int randomY = GetRandomInt(0, Height);
-            return Tiles[randomX, randomY];
-        }
-
-        private int GetRandomInt(int min, int max)
-        {
             var rand = new Random();
-            int index = rand.Next(min, max);
-            return index;
+            int randomX = rand.Next(0, Width);
+            int randomY = rand.Next(0, Height);
+            return Tiles[randomX, randomY];
         }
     }
 }

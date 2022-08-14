@@ -1,0 +1,26 @@
+> Added
+	- Grid.cs
+		- Criei métodos auxiliares para:
+			- Validar movimento de jogador -> ValidateMovement(movement)
+			- Alterar a propriedade 'isOccupied' dos tiles -> SetOccupied(coord, isOccupied)
+			- Acessar o tile através de sua coordenada -> GetTileAt(coord)
+			- Acessar um tile aleatório -> GetRandomTile()
+> Changed
+	- Grid.cs
+		- Troquei a coleção que armazena as GridBox para um array bidimensional, para otimizar a alocação de memória e facilitar o acesso aos tiles
+		- 
+> Refactored
+	- Transformei todos os membros de classes em propriedades
+	- Renomeei todas as propriedades para usarem o padrão PascalCasing
+	- Renomeei os parametros de alguns métodos para usarem camelCasing
+	- Extrai as structs, enums e classes para seus respectivos arquivos
+	- Criei namespaces para organizar o conteúdo do projeto
+	- Criei pastas para cada namespace
+	- Nomeei os namespaces para refletirem melhor seus conteúdos
+	- GridBox.cs
+		- Removi as variaveis x e y e adicionei uma nova propriedade Position do tipo Vector2 para armazenar as coordenadas.
+  		- Renomeei a propriedade ocupied para IsOccupied, melhorando a legibilidade.
+	- Grid.cs
+		- Renomeei as propriedades xLenght e yLenght para Width e Height
+		- Renomeei as variaveis internas dos loops para x e y para melhorar a legibilidade
+		- 
