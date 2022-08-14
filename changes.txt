@@ -1,14 +1,31 @@
-> Added
-	- Grid.cs
-		- Criei métodos auxiliares para:
-			- Validar movimento de jogador -> ValidateMovement(movement)
-			- Alterar a propriedade 'isOccupied' dos tiles -> SetOccupied(coord, isOccupied)
-			- Acessar o tile através de sua coordenada -> GetTileAt(coord)
-			- Acessar um tile aleatório -> GetRandomTile()
-> Changed
-	- Grid.cs
-		- Troquei a coleção que armazena as GridBox para um array bidimensional, para otimizar a alocação de memória e facilitar o acesso aos tiles
-		- 
+- Character.cs
+	- Adicionei a propriedade 'IsDead' para facilitar a checagem no 'HandleTurn' 
+	- Removi as propriedades referentes as skills do character e criei 'Skills' usando a struct 'CharacterSkills' para agrupar esses informações
+	- Movi a lógica de instanciação de classe para o construtor da classe
+	- Cada classe possui suas proprias variações de 'CharacterSkills'
+	- Alterei a lógica do método 'CheckCloseTargets' para verificar se existem inimigos nas 4 direções, sempre usando valores válidos dentro dos limites da grid
+	- Criei o método 'MoveTo' para mover o personagem validando a posição final impedindo de sair dos limites do grid
+	- Alterei o método 'Attack' para aplicar um dano aleatório entre 0 e o 'BaseDamage' da classe escolhida multiplicada pelo 'DamageMultiplier' da classe
+	- Adicionei uma chance randomica de empurrar o target para a direção oposta. A chance percentual está nas Skills da classe
+- Game.cs
+	- Criei a classe para extrair a lógica do jogo do ponto de entrada do programa
+	- Passei a lógica de start game e turnos para a classe
+	- Troquei a forma como 'HandleTurn' era chamado pois estava causando um encadeamento de chamadas na stack desnecessário. Utilizei no lugar um 'do...while' loop
+- Grid.cs
+	- Criei métodos auxiliares para:
+		- Validar movimento de jogador -> ValidateMovement(movement)
+		- Alterar a propriedade 'isOccupied' dos tiles -> SetOccupied(coord, isOccupied)
+		- Acessar o tile através de sua coordenada -> GetTileAt(coord)
+		- Acessar um tile aleatório -> GetRandomTile()
+	- Troquei a coleção que armazena as GridBox para um array bidimensional, para otimizar a alocação de memória, facilitar o acesso aos tiles e permitir a criação de matrizes não-quadradas
+	- Troquei os 'Environment.NewLine' por '\n' para simplificar o 'Console.WriteLine'
+	- Renomeei as propriedades xLenght e yLenght para Width e Height
+	- Renomeei as variaveis internas dos loops para x e y para melhorar a legibilidade
+	- Movi o método 'RandomlyPlaceCharacterOnGrid' para essa classe por considerar pertencer ao escopo dela
+- GridBox.cs
+	- Removi as variaveis x e y e adicionei uma nova propriedade Position do tipo Vector2 para armazenar as coordenadas.
+  	- Renomeei a propriedade ocupied para IsOccupied, melhorando a legibilidade.	
+
 > Refactored
 	- Transformei todos os membros de classes em propriedades
 	- Renomeei todas as propriedades para usarem o padrão PascalCasing
@@ -16,11 +33,5 @@
 	- Extrai as structs, enums e classes para seus respectivos arquivos
 	- Criei namespaces para organizar o conteúdo do projeto
 	- Criei pastas para cada namespace
-	- Nomeei os namespaces para refletirem melhor seus conteúdos
-	- GridBox.cs
-		- Removi as variaveis x e y e adicionei uma nova propriedade Position do tipo Vector2 para armazenar as coordenadas.
-  		- Renomeei a propriedade ocupied para IsOccupied, melhorando a legibilidade.
-	- Grid.cs
-		- Renomeei as propriedades xLenght e yLenght para Width e Height
-		- Renomeei as variaveis internas dos loops para x e y para melhorar a legibilidade
-		- 
+	- Nomeei os namespaces para refletirem melhor seus conteúdos 
+		

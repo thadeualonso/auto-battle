@@ -70,27 +70,6 @@ namespace AutoBattle.Entities
             }
         }
 
-        private Vector2 GetDirection(Directions directions)
-        {
-            Vector2 result = new Vector2(0, 0);
-            switch (directions)
-            {
-                case Directions.LEFT:
-                    result.X = -1;
-                    break;
-                case Directions.RIGHT:
-                    result.X = 1;
-                    break;
-                case Directions.UP:
-                    result.Y = -1;
-                    break;
-                case Directions.DOWN:
-                    result.Y = 1;
-                    break;
-            }
-            return result;
-        }
-
         public void MoveTo(Grid grid, Directions direction)
         {
             Vector2 moveDirection = GetDirection(direction);
@@ -147,7 +126,28 @@ namespace AutoBattle.Entities
             Console.WriteLine();
         }
 
-        private Directions GetDirection(System.Numerics.Vector2 direction)
+        private Vector2 GetDirection(Directions directions)
+        {
+            Vector2 result = new Vector2(0, 0);
+            switch (directions)
+            {
+                case Directions.LEFT:
+                    result.X = -1;
+                    break;
+                case Directions.RIGHT:
+                    result.X = 1;
+                    break;
+                case Directions.UP:
+                    result.Y = -1;
+                    break;
+                case Directions.DOWN:
+                    result.Y = 1;
+                    break;
+            }
+            return result;
+        }
+
+        private Directions GetDirection(Vector2 direction)
         {
             Directions result = Directions.LEFT;
 
