@@ -1,3 +1,6 @@
+- Program.cs
+	- Movi toda parte de lógica de jogo para 'Game.cs'
+	- Criei métodos para receber a escolha da classe do jogador via input, validando o input.
 - Character.cs
 	- Adicionei a propriedade 'IsDead' para facilitar a checagem no 'HandleTurn' 
 	- Removi as propriedades referentes as skills do character e criei 'Skills' usando a struct 'CharacterSkills' para agrupar esses informações
@@ -8,6 +11,7 @@
 	- Alterei o método 'Attack' para aplicar um dano aleatório entre 0 e o 'BaseDamage' da classe escolhida multiplicada pelo 'DamageMultiplier' da classe
 	- Adicionei uma chance randomica de empurrar o target para a direção oposta. A chance percentual está nas Skills da classe
 	- Criei métodos auxiliares para converter 'Directions' para 'Vector2' e vice-versa
+	- Criei um método para randomizar o jogador inicial
 - Game.cs
 	- Criei a classe para extrair a lógica do jogo do ponto de entrada do programa
 	- Passei a lógica de start game e turnos para a classe
