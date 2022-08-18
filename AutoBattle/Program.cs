@@ -6,6 +6,9 @@ namespace AutoBattle
 {
     class Program
     {
+        public const int FIRST_VALID_OPTION = 1;
+        public const int LAST_VALID_OPTION = 4;
+
         static void Main()
         {
             Console.WriteLine("----- AUTO BATTLE GAME -----");
@@ -38,7 +41,9 @@ namespace AutoBattle
         public static CharacterClass CreateEnemyCharacter()
         {
             var rand = new Random();
-            int randomInteger = rand.Next(1, 4);
+            int minValue = 1;
+            int maxValue = 4;
+            int randomInteger = rand.Next(minValue, maxValue);
             return GetClassByInt(randomInteger);
         }
 
@@ -57,7 +62,7 @@ namespace AutoBattle
             }
             else
             {
-                return option > 0 && option <= 4;
+                return option >= FIRST_VALID_OPTION && option <= LAST_VALID_OPTION;
             }
         }
     }

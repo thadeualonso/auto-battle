@@ -7,7 +7,12 @@ namespace AutoBattle.Entities.CharacterClasses
         public Warrior(string name, float health) 
             : base(name, health)
         {
-            Skills = new CharacterSkills { BaseDamage = 15, DamageMultiplier = 1.2f, KnockBackPercentChance = 50 };
+            SetSkills(new CharacterSkills
+            {
+                BaseDamage = 15,
+                DamageMultiplier = 1.2f,
+                KnockBackPercentChance = 50
+            });
         }
     }
 }

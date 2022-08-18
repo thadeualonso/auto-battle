@@ -7,7 +7,12 @@ namespace AutoBattle.Entities.CharacterClasses
         public Paladin(string name, float health) 
             : base(name, health)
         {
-            Skills = new CharacterSkills { BaseDamage = 10, DamageMultiplier = 1, KnockBackPercentChance = 30 };
+            SetSkills(new CharacterSkills
+            {
+                BaseDamage = 10,
+                DamageMultiplier = 1f,
+                KnockBackPercentChance = 30
+            });
         }
     }
 }

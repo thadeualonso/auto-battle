@@ -7,7 +7,12 @@ namespace AutoBattle.Entities.CharacterClasses
         public Cleric(string name, float health) 
             : base(name, health)
         {
-            Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 2f, KnockBackPercentChance = 10 };
+            Skills = new CharacterSkills 
+            { 
+                BaseDamage = 5, 
+                DamageMultiplier = 2f, 
+                KnockBackPercentChance = 10 
+            };
         }
     }
 }

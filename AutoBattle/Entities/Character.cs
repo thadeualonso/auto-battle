@@ -5,9 +5,10 @@ using System.Numerics;
 
 namespace AutoBattle.Entities
 {
-
     public class Character
     {
+        private const int DIRECTION = 1;
+
         public string Name { get; private set; }
         public float Health { get; set; }
         public CharacterSkills Skills { get; set; }
@@ -19,6 +20,11 @@ namespace AutoBattle.Entities
         {
             Name = name;
             Health = health;
+        }
+
+        protected void SetSkills(CharacterSkills skills)
+        {
+            Skills = skills;
         }
 
         public void TakeDamage(float amount)
@@ -71,10 +77,12 @@ namespace AutoBattle.Entities
         {
             float x = CurrentBox.Position.X;
             float y = CurrentBox.Position.Y;
-            Vector2 left = grid.ValidateMovement(new Vector2(x - 1, y));
-            Vector2 right = grid.ValidateMovement(new Vector2(x + 1, y));
-            Vector2 up = grid.ValidateMovement(new Vector2(x, y - 1));
-            Vector2 down = grid.ValidateMovement(new Vector2(x, y + 1));
+            int offset = 1;
+
+            Vector2 left = grid.ValidateMovement(new Vector2(x - offset, y));
+            Vector2 right = grid.ValidateMovement(new Vector2(x + offset, y));
+            Vector2 up = grid.ValidateMovement(new Vector2(x, y - offset));
+            Vector2 down = grid.ValidateMovement(new Vector2(x, y + offset));
 
             bool hasEnemyOnLeft     = HasTargetOnTile(grid, left);
             bool hasEnemyOnRight    = HasTargetOnTile(grid, right);
@@ -91,15 +99,24 @@ namespace AutoBattle.Entities
 
         public void Attack (Grid grid, Character target)
         {
+            const int MIN_VALUE = 0;
+
             var rand = new Random();
-            int randomDamage = (int)Math.Ceiling(rand.Next(0, (int)Skills.BaseDamage) * Skills.DamageMultiplier);
+            int randomDamage = (int)Math.Ceiling(rand.Next(MIN_VALUE, (int)Skills.BaseDamage) * Skills.DamageMultiplier);
             target.TakeDamage(randomDamage);
             Console.WriteLine($"{Name} is attacking the {Target.Name} and did {randomDamage} damage");
             Console.WriteLine($"{Name} Health: {Health} / {Target.Name} Health: {Target.Health}");
+            TryKnockBack(grid, target, rand);
+            Console.WriteLine();
+        }
 
-            int knowBackChance = rand.Next(0, 101);
+        private void TryKnockBack(Grid grid, Character target, Random rand)
+        {
+            const int MIN_VALUE = 0;
+            const int MAX_VALUE = 101;
+            int knowBackChance = rand.Next(MIN_VALUE, MAX_VALUE);
 
-            if(knowBackChance <= Skills.KnockBackPercentChance)
+            if (knowBackChance <= Skills.KnockBackPercentChance)
             {
                 Vector2 position = new Vector2(CurrentBox.Position.X, CurrentBox.Position.Y);
                 Vector2 targetPosition = new Vector2(target.CurrentBox.Position.X, target.CurrentBox.Position.Y);
@@ -107,26 +124,25 @@ namespace AutoBattle.Entities
                 Console.WriteLine($"{Target.Name} got knocked back!");
                 target.MoveTo(grid, GetDirection(direction));
             }
-
-            Console.WriteLine();
         }
 
         private Vector2 GetDirection(Directions directions)
         {
-            Vector2 result = new Vector2(0, 0);
+            Vector2 result = Vector2.Zero;
+
             switch (directions)
             {
                 case Directions.LEFT:
-                    result.X = -1;
+                    result.X = -DIRECTION;
                     break;
                 case Directions.RIGHT:
-                    result.X = 1;
+                    result.X = DIRECTION;
                     break;
                 case Directions.UP:
-                    result.Y = -1;
+                    result.Y = -DIRECTION;
                     break;
                 case Directions.DOWN:
-                    result.Y = 1;
+                    result.Y = DIRECTION;
                     break;
             }
             return result;
@@ -136,10 +152,10 @@ namespace AutoBattle.Entities
         {
             Directions result = Directions.LEFT;
 
-            if (direction.X == 1) result = Directions.RIGHT;
-            if (direction.X == -1) result = Directions.LEFT;
-            if (direction.Y == 1) result = Directions.DOWN;
-            if (direction.Y == -1) result = Directions.UP;
+            if (direction.X == DIRECTION) result = Directions.RIGHT;
+            if (direction.X == -DIRECTION) result = Directions.LEFT;
+            if (direction.Y == DIRECTION) result = Directions.DOWN;
+            if (direction.Y == -DIRECTION) result = Directions.UP;
 
             return result;
         }

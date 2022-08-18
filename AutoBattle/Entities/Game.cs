@@ -7,12 +7,16 @@ namespace AutoBattle.Entities
 {
     class Game
     {
+        private const int INITIAL_HEALTH = 100;
+        private const int GRID_WIDTH = 5;
+        private const int GRID_HEIGHT = 5;
+
         public Character Player { get; private set; }
         public Character Enemy { get; private set; }
 
+
         private readonly List<Character> allPlayers;
         private Grid grid;
-        private int defaultInitialHealth = 100;
 
         public Game()
         {
@@ -21,18 +25,18 @@ namespace AutoBattle.Entities
 
         public void SetEnemyClass(CharacterClass enemyClass)
         {
-            Enemy = GetCharacterClass("Enemy", defaultInitialHealth, enemyClass);
+            Enemy = GetCharacterClass("Enemy", INITIAL_HEALTH, enemyClass);
         }
 
         public void SetPlayerClass(CharacterClass playerClass)
         {
-            Player = GetCharacterClass("Player", defaultInitialHealth, playerClass);
+            Player = GetCharacterClass("Player", INITIAL_HEALTH, playerClass);
         }
 
         public void StartGame()
         {
             Console.WriteLine("----- CREATING BATTLEFIELD -----");
-            grid = new Grid(5, 5);
+            grid = new Grid(GRID_WIDTH, GRID_HEIGHT);
             Player.Target = Enemy;
             Enemy.Target = Player;
 
@@ -65,7 +69,10 @@ namespace AutoBattle.Entities
         private void SetFirstPlayer()
         {
             var rand = new Random();
-            if (rand.Next(0, 2) == 0)
+            int minValue = 0;
+            int maxValue = 2;
+
+            if (rand.Next(minValue, maxValue) == 0)
             {
                 allPlayers.Add(Player);
                 allPlayers.Add(Enemy);
@@ -88,7 +95,7 @@ namespace AutoBattle.Entities
 
         private bool HandleTurn()
         {
-            bool isGameOver = false;
+            bool isGameOver;
 
             if (Player.IsDead)
             {
