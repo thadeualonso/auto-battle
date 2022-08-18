@@ -68,20 +68,9 @@ namespace AutoBattle.Entities
         }
         private void SetFirstPlayer()
         {
-            var rand = new Random();
-            int minValue = 0;
-            int maxValue = 2;
-
-            if (rand.Next(minValue, maxValue) == 0)
-            {
-                allPlayers.Add(Player);
-                allPlayers.Add(Enemy);
-            }
-            else
-            {
-                allPlayers.Add(Enemy);
-                allPlayers.Add(Player);
-            }
+            allPlayers.Add(Player);
+            allPlayers.Add(Enemy);
+            allPlayers.Sort();
         }
 
         private void StartTurn()

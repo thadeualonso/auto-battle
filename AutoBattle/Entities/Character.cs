@@ -2,10 +2,11 @@
 using AutoBattle.Types;
 using AutoBattle.Enums;
 using System.Numerics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AutoBattle.Entities
 {
-    public class Character
+    public class Character : IComparable<Character>
     {
         private const int DIRECTION = 1;
 
@@ -158,6 +159,16 @@ namespace AutoBattle.Entities
             if (direction.Y == -DIRECTION) result = Directions.UP;
 
             return result;
+        }
+
+        public int CompareTo([AllowNull] Character other)
+        {
+            if (other.Name[0] > Name[0])
+                return 1;
+            else if (other.Name[0] == Name[0])
+                return 0;
+            else
+                return -1;
         }
     }
 }
