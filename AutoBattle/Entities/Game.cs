@@ -8,8 +8,8 @@ namespace AutoBattle.Entities
     class Game
     {
         private const int INITIAL_HEALTH = 100;
-        private const int GRID_WIDTH = 5;
-        private const int GRID_HEIGHT = 5;
+        private const int GRID_HEIGHT = 1;
+        private const int GRID_WIDTH = 3;
 
         public Character Player { get; private set; }
         public Character Enemy { get; private set; }
@@ -36,7 +36,7 @@ namespace AutoBattle.Entities
         public void StartGame()
         {
             Console.WriteLine("----- CREATING BATTLEFIELD -----");
-            grid = new Grid(GRID_WIDTH, GRID_HEIGHT);
+            grid = new Grid(GRID_HEIGHT, GRID_WIDTH);
             Player.Target = Enemy;
             Enemy.Target = Player;
 

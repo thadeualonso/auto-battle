@@ -12,6 +12,11 @@ namespace AutoBattle.Entities
 
         public Grid(int lines, int columns)
         {
+            if (lines <= 1 && columns <= 1)
+            {
+                throw new Exception("Invalid sizes to grid!");
+            }
+
             Height = lines;
             Width = columns;
             Tiles = new GridBox[Width, Height];
