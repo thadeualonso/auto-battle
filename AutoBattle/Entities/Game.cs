@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoBattle.Entities.CharacterClasses;
+using AutoBattle.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace AutoBattle.Entities
@@ -10,18 +12,30 @@ namespace AutoBattle.Entities
 
         private readonly List<Character> allPlayers;
         private Grid grid;
+        private int defaultInitialHealth = 100;
 
-        public Game(Character playerCharacter, Character enemyCharacter)
+        public Game()
         {
-            Player = playerCharacter;
-            Enemy = enemyCharacter;
             allPlayers = new List<Character>();
+        }
+
+        public void SetEnemyClass(CharacterClass enemyClass)
+        {
+            Enemy = GetCharacterClass("Enemy", defaultInitialHealth, enemyClass);
+        }
+
+        public void SetPlayerClass(CharacterClass playerClass)
+        {
+            Player = GetCharacterClass("Player", defaultInitialHealth, playerClass);
         }
 
         public void StartGame()
         {
             Console.WriteLine("----- CREATING BATTLEFIELD -----");
             grid = new Grid(5, 5);
+            Player.Target = Enemy;
+            Enemy.Target = Player;
+
             SetFirstPlayer();
 
             foreach (var character in allPlayers)
@@ -37,6 +51,17 @@ namespace AutoBattle.Entities
             StartTurn();
         }
 
+        private Character GetCharacterClass(string name, int initialHealth, CharacterClass characterClass)
+        {
+            return characterClass switch
+            {
+                CharacterClass.Paladin => new Paladin(name, initialHealth),
+                CharacterClass.Warrior => new Warrior(name, initialHealth),
+                CharacterClass.Cleric => new Cleric(name, initialHealth),
+                CharacterClass.Archer => new Archer(name, initialHealth),
+                _ => new Character(name, initialHealth),
+            };
+        }
         private void SetFirstPlayer()
         {
             var rand = new Random();

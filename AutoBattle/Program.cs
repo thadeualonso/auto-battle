@@ -10,16 +10,17 @@ namespace AutoBattle
         {
             Console.WriteLine("----- AUTO BATTLE GAME -----");
 
-            Character PlayerCharacter = GetPlayerChoice();
-            Character EnemyCharacter = CreateEnemyCharacter();
-            EnemyCharacter.Target = PlayerCharacter;
-            PlayerCharacter.Target = EnemyCharacter;
+            Game game = new Game();
 
-            Game game = new Game(PlayerCharacter, EnemyCharacter);
+            CharacterClass playerClass = GetPlayerChoice();
+            CharacterClass enemyClass = CreateEnemyCharacter();
+
+            game.SetPlayerClass(playerClass);
+            game.SetEnemyClass(enemyClass);
             game.StartGame();
         }
 
-        public static Character GetPlayerChoice()
+        public static CharacterClass GetPlayerChoice()
         {
             Console.WriteLine("Choose Between One of this Classes:\n");
             Console.Write("[1] Paladin, [2] Warrior, [3] Cleric, [4] Archer: ");
@@ -31,18 +32,21 @@ namespace AutoBattle
                 choice = Console.ReadLine();
             }
 
-            CharacterClasses currentClass = (CharacterClasses)int.Parse(choice);
-            Console.WriteLine($"> Player Class Choice: {currentClass}");
-            return new Character("Player", 100, currentClass);
+            return GetClassByInt(Int32.Parse(choice));
         }
 
-        public static Character CreateEnemyCharacter()
+        public static CharacterClass CreateEnemyCharacter()
         {
             var rand = new Random();
             int randomInteger = rand.Next(1, 4);
-            CharacterClasses enemyClass = (CharacterClasses)randomInteger;
+            return GetClassByInt(randomInteger);
+        }
+
+        private static CharacterClass GetClassByInt(int randomInteger)
+        {
+            CharacterClass enemyClass = (CharacterClass)randomInteger;
             Console.WriteLine($"> Enemy Class Choice: {enemyClass}");
-            return new Character("Enemy", 100, enemyClass);
+            return enemyClass;
         }
 
         public static bool IsValidOption(string input)
@@ -53,7 +57,7 @@ namespace AutoBattle
             }
             else
             {
-                return option >= 0 && option <= 4;
+                return option > 0 && option <= 4;
             }
         }
     }

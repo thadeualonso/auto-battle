@@ -5,6 +5,7 @@ using System.Numerics;
 
 namespace AutoBattle.Entities
 {
+
     public class Character
     {
         public string Name { get; private set; }
@@ -14,26 +15,10 @@ namespace AutoBattle.Entities
         public bool IsDead { get; set; }
         public GridBox CurrentBox { get; set; }
 
-        public Character(string name, float health, CharacterClasses characterClass)
+        public Character(string name, float health)
         {
             Name = name;
             Health = health;
-
-            switch (characterClass)
-            {
-                case CharacterClasses.Paladin:
-                    Skills = new CharacterSkills { BaseDamage = 10, DamageMultiplier = 1, KnockBackPercentChance = 30 };
-                    break;
-                case CharacterClasses.Warrior:
-                    Skills = new CharacterSkills { BaseDamage = 15, DamageMultiplier = 1.2f, KnockBackPercentChance = 50 };
-                    break;
-                case CharacterClasses.Cleric:
-                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 2f, KnockBackPercentChance = 10 };
-                    break;
-                case CharacterClasses.Archer:
-                    Skills = new CharacterSkills { BaseDamage = 5, DamageMultiplier = 1.8f, KnockBackPercentChance = 10 };
-                    break;
-            }
         }
 
         public void TakeDamage(float amount)
